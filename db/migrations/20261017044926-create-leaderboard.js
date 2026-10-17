@@ -39,7 +39,6 @@ module.exports = {
       }
     });
 
-    // Paggawa ng unique constraint para sa session_id batay sa ERD
     await queryInterface.addConstraint('leaderboard', {
       type: 'unique',
       name: 'uq_leaderboard_session',
