@@ -4,49 +4,39 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('leaderboard', {
-      leaderboard_id: {
-        type: Sequelize.INTEGER,
+      id: {
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        autoIncrement: true
+        type: Sequelize.INTEGER
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'user_id'
-        },
-        onDelete: 'CASCADE'
-      },
-      session_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        unique: true,
-        references: {
-          model: 'game_sessions',
-          key: 'session_id'
-        },
-        onDelete: 'CASCADE'
-      },
-      high_score: {
+      game_id: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      achieved_at: {
-        type: Sequelize.DATE,
+      user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      score: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: 0
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
-    });
-
-    await queryInterface.addConstraint('leaderboard', {
-      type: 'unique',
-      name: 'uq_leaderboard_session',
-      fields: ['session_id']
     });
   },
 
-  async down(queryInterface) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('leaderboard');
   }
 };

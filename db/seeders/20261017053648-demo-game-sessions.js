@@ -2,28 +2,30 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert('game_sessions', [
       {
-        session_id: 101,
+        game_id: 1,
         user_id: 1,
-        final_score: 1500,
-        max_streak: 5,
-        tower_height: 12,
-        played_at: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
-        session_id: 102,
+        game_id: 1,
         user_id: 2,
-        final_score: 800,
-        max_streak: 2,
-        tower_height: 6,
-        played_at: new Date()
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        game_id: 1,
+        user_id: 3,
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
   },
 
-  async down(queryInterface) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('game_sessions', null, {});
   }
-}
+};

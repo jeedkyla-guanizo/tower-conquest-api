@@ -2,26 +2,33 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert('leaderboard', [
       {
-        leaderboard_id: 1,
+        game_id: 1,
         user_id: 1,
-        session_id: 101,
-        high_score: 1500,
-        achieved_at: new Date()
+        score: 150,
+        created_at: new Date(),
+        updated_at: new Date()
       },
       {
-        leaderboard_id: 2,
+        game_id: 1,
         user_id: 2,
-        session_id: 102,
-        high_score: 800,
-        achieved_at: new Date()
+        score: 120,
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        game_id: 1,
+        user_id: 3,
+        score: 90,
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
   },
 
-  async down(queryInterface) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('leaderboard', null, {});
   }
 };

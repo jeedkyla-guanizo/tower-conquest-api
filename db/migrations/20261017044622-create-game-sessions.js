@@ -4,41 +4,35 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('game_sessions', {
-      session_id: {
-        type: Sequelize.INTEGER,
+      id: {
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        autoIncrement: true
+        type: Sequelize.INTEGER
+      },
+      game_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'users',
-          key: 'user_id'
-        },
-        onDelete: 'CASCADE'
+        unique: 'composite_game_user_unique'
       },
-      final_score: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      max_streak: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      tower_height: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      played_at: {
-        type: Sequelize.DATE,
+      created_at: {
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
 
-  async down(queryInterface) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('game_sessions');
   }
 };
