@@ -1,7 +1,7 @@
 {
   "name": "tower-conquest-api",
   "version": "1.0.0",
-  "description": "API for Tower Conquest (CS 313 Software Engineering 1)" ,
+  "description": "API for Tower Conquest game(CS 313 Software Engineering 1)" ,
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
