@@ -16,8 +16,7 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        unique: 'composite_game_user_unique'
+        allowNull: false
       },
       created_at: {
         allowNull: false,
@@ -28,6 +27,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      }
+    }, {
+      uniqueKeys: {
+        composite_game_user_unique: {
+          fields: ['game_id', 'user_id']
+        }
       }
     });
   },
