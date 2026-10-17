@@ -4,7 +4,7 @@ const { QueryTypes } = require('sequelize');
 async function findFinishedGamePlayers(since) {
   const sql = `
     SELECT 
-      g.id AS session_code,
+      LPAD(g.id::TEXT, 6, '0') AS session_code,
       g.created_at AS started_at,
       g.updated_at AS ended_at,
       u.school_id,
