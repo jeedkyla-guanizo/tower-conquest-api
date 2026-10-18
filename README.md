@@ -60,7 +60,7 @@ Base URL: `http://localhost:3001/api/v1`
 
 ## What "completed" means in my game
 
-A player has compled the game when they correctly answer all the questions and became the first to reach the last level of the session ends.
+A player has completed the game when they correctly answer all the questions and became the first to reach the last level of the session ends.
 
 ## Tables
 
