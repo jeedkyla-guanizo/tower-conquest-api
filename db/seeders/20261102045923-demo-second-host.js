@@ -18,6 +18,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('users', { school_id: '2099-0003' }, {});
+    await queryInterface.bulkDelete('users', { school_id: '2099-0004' }, {});
   }
 };
