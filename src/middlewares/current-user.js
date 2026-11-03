@@ -13,7 +13,12 @@ if (env.nodeEnv === 'production') {
 
 async function currentUser(req, res, next) {
   const schoolId = req.get('X-Demo-User');
+  
+  console.log('School ID received:',schoolId)
+
   const user = schoolId ? await userRepository.findBySchoolId(schoolId) : null;
+
+  console.log('User found:', !!user);
 
   // Only what the rest of the code needs. Never the whole account.
   req.user = user ? { user_id: user.user_id, school_id: user.school_id, role: user.role } : null;
