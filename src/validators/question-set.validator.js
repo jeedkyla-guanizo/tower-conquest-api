@@ -1,40 +1,61 @@
-const { badRequest } = require('../errors/app-error');
+const { body, param } = require('express-validator');
 
-function validateCreate(req, res, next) {
-  const data = req.body;
-  const errors = {};
+const idParam = param('id')
+  .isInt({ min: 1 })
+  .withMessage('id must be a positive whole number')
+  .toInt();
 
-  if (!data.title || typeof data.title !== 'string' || data.title.trim() === '') {
-    errors.title = 'Title is required and must be a non-empty string.';
-  }
+const title = () => body('title')
+  .exists()
+  .withMessage('title is required')
+  .bail()
+  .isString()
+  .withMessage('title must be text')
+  .bail()
+  .trim()
+  .isLength({ min: 3, max: 150 })
+  .withMessage('title must be 3 to 150 characters long');
 
-  if (!data.host_id) {
-    errors.host_id = 'Host ID is required.';
-  }
+const subject = () => body('subject')
+  .optional({ values: 'null' })
+  .isString()
+  .withMessage('subject must be text')
+  .bail()
+  .trim()
+  .isLength({ max: 50 })
+  .withMessage('subject must be at most 50 characters long');
 
-  if (Object.keys(errors).length > 0) {
-    return next(badRequest('VALIDATION_ERROR', 'Invalid question set data.', errors));
-  }
+const isPublic = () => body('is_public')
+  .optional()
+  .isBoolean({ strict: true })
+  .withMessage('is_public must be true or false');
 
-  next();
-}
+const createRules = [
+  title(),
+  subject(),
+  isPublic(),
+];
 
-function validateUpdate(req, res, next) {
-  const data = req.body;
-  const errors = {};
+const updateRules = [
+  idParam,
+  title().optional(),
+  subject(),
+  isPublic(),
+  body().custom((value) => {
+    const sent = Object.keys(value || {});
 
-  if (data.title !== undefined && (typeof data.title !== 'string' || data.title.trim() === '')) {
-    errors.title = 'Title must be a non-empty string.';
-  }
+    if (!sent.some((key) =>
+      ['title', 'subject', 'is_public'].includes(key)
+    )) {
+      throw new Error('send at least one of: title, subject, is_public');
+    }
 
-  if (Object.keys(errors).length > 0) {
-    return next(badRequest('VALIDATION_ERROR', 'Invalid question set update data.', errors));
-  }
-
-  next();
-}
+    return true;
+  }),
+];
 
 module.exports = {
-  validateCreate,
-  validateUpdate,
+  idParam,
+  createRules,
+  updateRules,
 };
