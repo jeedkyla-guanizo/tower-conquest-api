@@ -1,6 +1,0 @@
-$kind: http-request
-url: http://localhost:3001/api/v1/question-sets/9999
-method: GET
-headers:
-  X-Demo-User: 2099-0004
-order: 8000
