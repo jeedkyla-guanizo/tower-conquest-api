@@ -10,4 +10,12 @@
 //   },
 //
 // A constraint that is not listed here still answers 409, with the code CONFLICT.
-module.exports = {};
+
+module.exports = {
+  players_session_user_unique: {
+    status: 409,
+    code: 'PLAYER_ALREADY_JOINED',
+    message: 'This player already has a seat in this session.'
+  }
+};
+
