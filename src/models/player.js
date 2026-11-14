@@ -1,4 +1,5 @@
 
+
 module.exports = (sequelize, DataTypes) => {
   const Player = sequelize.define(
     'Player',
@@ -15,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       session_id: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      nickname: {
+        type: DataTypes.STRING(30),
+        allowNull: true
       },
       score: {
         type: DataTypes.INTEGER,

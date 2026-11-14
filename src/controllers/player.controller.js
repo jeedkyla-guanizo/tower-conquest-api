@@ -1,8 +1,13 @@
+
 const playerService = require('../services/player.service');
 
 async function join(req, res, next) {
   try {
-    const result = await playerService.join(req.params.code, req.user);
+    const result = await playerService.join(
+      req.params.code,
+      req.user,
+      req.body.nickname
+    );
 
     res.status(result.created ? 201 : 200).json({
       data: result.player

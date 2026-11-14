@@ -1,6 +1,6 @@
 const { badRequest } = require('../errors/app-error');
 
-function validateJoin(req, res, next) {
+function validateCode(req, res, next) {
   const { code } = req.params;
 
   if (!/^\d{6}$/.test(code)) {
@@ -12,6 +12,31 @@ function validateJoin(req, res, next) {
   next();
 }
 
+function validateJoin(req, res, next) {
+  validateCode(req, res, (error) => {
+    if (error) return next(error);
+
+    const nickname = req.body?.nickname;
+
+    if (
+      typeof nickname !== 'string' ||
+      !nickname.trim() ||
+      nickname.trim().length > 30
+    ) {
+      return next(
+        badRequest(
+          'INVALID_NICKNAME',
+          'Nickname must be 1 to 30 characters.'
+        )
+      );
+    }
+
+    req.body.nickname = nickname.trim();
+    next();
+  });
+}
+
 module.exports = {
+  validateCode,
   validateJoin
 };

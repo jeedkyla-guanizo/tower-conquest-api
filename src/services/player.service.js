@@ -1,9 +1,10 @@
 
+
 const playerRepository = require('../repositories/player.repository');
 const sessionRepository = require('../repositories/session.repository');
 const { conflict, notFound } = require('../errors/app-error');
 
-async function join(code, user) {
+async function join(code, user, nickname) {
   const session = await sessionRepository.findByCode(code);
 
   if (!session) {
@@ -16,7 +17,7 @@ async function join(code, user) {
     user.user_id
   );
 
-  // Returning players keep their existing seat and score.
+  // Returning players keep their original nickname and seat.
   if (existingPlayer) {
     return {
       player: existingPlayer,
@@ -35,11 +36,12 @@ async function join(code, user) {
     );
   }
 
-  // Create a new player.
+  // Create a new player with a nickname.
   try {
     const player = await playerRepository.create({
       session_id: session.session_id,
       user_id: user.user_id,
+      nickname,
       score: 0,
       level: 1
     });
