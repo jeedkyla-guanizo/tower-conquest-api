@@ -25,6 +25,10 @@ QuestionSet.belongsTo(User, { foreignKey: 'host_id' });
 User.hasMany(GameSession, { foreignKey: 'host_id' });
 GameSession.belongsTo(User, { foreignKey: 'host_id' });
 
+// Question Set and Session Relationship
+QuestionSet.hasMany(GameSession, { foreignKey: 'question_set_id' });
+GameSession.belongsTo(QuestionSet, { foreignKey: 'question_set_id' });
+
 // Session and Player Relationship
 GameSession.hasMany(Player, { foreignKey: 'session_id' });
 Player.belongsTo(GameSession, { foreignKey: 'session_id' });

@@ -1,3 +1,4 @@
+const questionSetRepository = require('../repositories/question-set.repository');
 const sessionRepository = require('../repositories/session.repository');
 const { conflict, forbidden, notFound } = require('../errors/app-error');
 
@@ -5,7 +6,17 @@ function generateJoinCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-async function create(user) {
+async function create(user, questionSetId) {
+  const questionSet = await questionSetRepository.findById(questionSetId);
+
+  if (!questionSet) {
+    throw notFound('QUESTION_SET_NOT_FOUND', 'Question Set not found.');
+  }
+
+  if (user.role !== 'ADMIN' && questionSet.host_id !== user.user_id) {
+    throw forbidden('You can only use your own Question Set.');
+  }
+
   let joinCode;
   let existingSession;
 
@@ -16,12 +27,14 @@ async function create(user) {
 
   return sessionRepository.create({
     host_id: user.user_id,
+    question_set_id: questionSet.set_id,
     join_code: joinCode,
     status: 'LOBBY',
     current_wave: 1,
     tower_health: 100
   });
 }
+
 
 async function get(code) {
   const session = await sessionRepository.findByCode(code);

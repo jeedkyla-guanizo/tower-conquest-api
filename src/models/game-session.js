@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
+      question_set_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
       join_code: {
         type: DataTypes.STRING(6),
         allowNull: false,

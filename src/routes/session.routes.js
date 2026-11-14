@@ -9,6 +9,7 @@ const requireUser = require('../middlewares/require-user');
 router.post(
   '/',
   requireUser('HOST', 'ADMIN'),
+  sessionValidator.validateQuestionSetId,
   sessionController.create
 );
 

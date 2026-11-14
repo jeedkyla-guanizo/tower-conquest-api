@@ -1,3 +1,4 @@
+
 const { badRequest } = require('../errors/app-error');
 
 function validateCode(req, res, next) {
@@ -26,7 +27,23 @@ function validateStatus(req, res, next) {
   next();
 }
 
+function validateQuestionSetId(req, res, next) {
+  const { question_set_id } = req.body;
+
+  if (!Number.isInteger(question_set_id) || question_set_id <= 0) {
+    return next(
+      badRequest(
+        'INVALID_QUESTION_SET_ID',
+        'A valid question_set_id is required.'
+      )
+    );
+  }
+
+  next();
+}
+
 module.exports = {
   validateCode,
-  validateStatus
+  validateStatus,
+  validateQuestionSetId
 };

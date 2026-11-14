@@ -2,7 +2,10 @@ const sessionService = require('../services/session.service');
 
 async function create(req, res, next) {
   try {
-    const session = await sessionService.create(req.user);
+    const session = await sessionService.create(
+      req.user,
+      req.body.question_set_id
+    );
 
     res.status(201).json({
       data: session
