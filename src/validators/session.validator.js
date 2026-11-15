@@ -1,5 +1,6 @@
 
-const { badRequest } = require('../errors/app-error');
+
+const { badRequest, conflict } = require('../errors/app-error');
 
 function validateCode(req, res, next) {
   const { code } = req.params;
@@ -20,7 +21,7 @@ function validateStatus(req, res, next) {
 
   if (!allowedStatuses.includes(status)) {
     return next(
-      badRequest('INVALID_STATUS', 'Status must be RUNNING or CLOSED.')
+      conflict('INVALID_STATUS', 'Status must be RUNNING or CLOSED.')
     );
   }
 
