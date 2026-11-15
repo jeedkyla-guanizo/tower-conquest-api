@@ -1,3 +1,4 @@
+
 const { badRequest } = require('../errors/app-error');
 
 function validateCode(req, res, next) {
@@ -20,13 +21,13 @@ function validateJoin(req, res, next) {
 
     if (
       typeof nickname !== 'string' ||
-      !nickname.trim() ||
-      nickname.trim().length > 30
+      nickname.trim().length < 2 ||
+      nickname.trim().length > 24
     ) {
       return next(
         badRequest(
           'INVALID_NICKNAME',
-          'Nickname must be 1 to 30 characters.'
+          'Nickname must be 2 to 24 characters.'
         )
       );
     }
