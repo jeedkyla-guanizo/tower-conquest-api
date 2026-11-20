@@ -18,7 +18,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"status is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.collectionVariables.set(\"setId\", pm.response.json().id);"
+                  "pm.test(\"status is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.collectionVariables.set(\"setId\", pm.response.json().set_id);"
                 ]
               }
             }
@@ -295,7 +295,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"status is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"error is NOT_FOUND\", function () {\r\n    pm.expect(pm.response.json().error.code).to.eql(\"NOT_FOUND\");\r\n});"
+                  "pm.test('status is 404', function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test('error is QUESTION_SET_NOT_FOUND', function () {\r\n    pm.expect(pm.response.json().error.code)\r\n        .to.eql('QUESTION_SET_NOT_FOUND');\r\n});"
                 ]
               }
             }
@@ -543,6 +543,415 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Module 2 - Session and Player",
+      "item": [
+        {
+          "name": "01 - Host Starts a Game (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"code\", pm.response.json().data.join_code);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "2099-0004"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"question_set_id\": 3\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "02 - A player tries to start a game (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "TC00001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"question_set_id\": 3\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03 - Read the game (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04 - A code that is not six digits (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/123",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "123"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "05 – A code that no game uses (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/999999",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "06 - A player Joins (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "TC00001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"Jeed Kyla\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}/players",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "07 – The same player joins again (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "TC00001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"Jeed Kyla\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}/players",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "08 - A second player takes a used nickname.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "TC00002"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"Jeed Kyla\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}/players",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "09 - A nickname that is too short (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "TC00002"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"A\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}/players",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10 - The host starts the game (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "2099-0004"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"RUNNING\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "11 - A new player joins too late (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "TC00003"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"jeed\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}/players",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "12 - A status change that is not allowed",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "X-Demo-User",
+                "value": "2099-0004"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"LOBBY\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/v1/sessions/{{code}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "v1",
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
@@ -552,6 +961,10 @@
     },
     {
       "key": "setId",
+      "value": ""
+    },
+    {
+      "key": "code",
       "value": ""
     }
   ]

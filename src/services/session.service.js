@@ -1,0 +1,76 @@
+const questionSetRepository = require('../repositories/question-set.repository');
+const sessionRepository = require('../repositories/session.repository');
+const { conflict, forbidden, notFound } = require('../errors/app-error');
+
+function generateJoinCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+async function create(user, questionSetId) {
+  const questionSet = await questionSetRepository.findById(questionSetId);
+
+  if (!questionSet) {
+    throw notFound('QUESTION_SET_NOT_FOUND', 'Question Set not found.');
+  }
+
+  if (user.role !== 'ADMIN' && questionSet.host_id !== user.user_id) {
+    throw forbidden('You can only use your own Question Set.');
+  }
+
+  let joinCode;
+  let existingSession;
+
+  do {
+    joinCode = generateJoinCode();
+    existingSession = await sessionRepository.findByCode(joinCode);
+  } while (existingSession);
+
+  return sessionRepository.create({
+    host_id: user.user_id,
+    question_set_id: questionSet.set_id,
+    join_code: joinCode,
+    status: 'LOBBY',
+    current_wave: 1,
+    tower_health: 100
+  });
+}
+
+
+async function get(code) {
+  const session = await sessionRepository.findByCode(code);
+
+  if (!session) {
+    throw notFound('SESSION_NOT_FOUND', 'Session not found.');
+  }
+
+  return session;
+}
+
+async function updateStatus(code, status, user) {
+  const session = await get(code);
+
+  if (session.host_id !== user.user_id && user.role !== 'ADMIN') {
+    throw forbidden('Only the host can update this session.');
+  }
+
+  const allowedStatuses = {
+    LOBBY: ['RUNNING', 'CLOSED'],
+    RUNNING: ['CLOSED'],
+    CLOSED: []
+  };
+
+  if (!allowedStatuses[session.status]?.includes(status)) {
+    throw conflict(
+      'INVALID_STATUS_CHANGE',
+      'This status change is not allowed.'
+    );
+  }
+
+  return sessionRepository.update(session, { status });
+}
+
+module.exports = {
+  create,
+  get,
+  updateStatus
+};
